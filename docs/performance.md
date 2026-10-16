@@ -20,8 +20,8 @@ in each of PNG, JPEG, GIF and BMP. That is 56 decodes, all successful.
 | GIF | 66.9 ms | 85.8 ms |
 | BMP | 22.4 ms | 31.0 ms |
 
-All twelve Breeze Images sample photographs in these four formats were also
-compared with Pillow 12.3.0 reference pixels. PNG/GIF/BMP were exact. JPEG mean
+Three sample photographs in each of these four formats were also compared
+with Pillow 12.3.0 reference pixels. PNG/GIF/BMP were exact. JPEG mean
 absolute error was below 0.04 on each RGB channel for those 4:4:4 fixtures.
 The committed conformance suite additionally exercises subsampling: nearest-
 neighbour chroma expansion intentionally differs from smoother native upsampling.

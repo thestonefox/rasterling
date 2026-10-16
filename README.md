@@ -9,7 +9,7 @@ Pure Elixir decoding for PNG, JPEG, GIF and BMP. **Little beast. Raw pixels.**
 
 - Runs on the BEAM with zero runtime dependencies.
 - No third-party NIFs, external converters, platform binaries or downloads.
-- Returns eight-bit RGBA pixels; terminal rendering belongs to Breeze Images.
+- Returns eight-bit RGBA pixels for your application to process or display.
 - Standard OTP `:zlib` handles PNG decompression.
 
 This is an initial decoder implementation, not a claim of complete image-format
@@ -57,8 +57,8 @@ Formats are recognized from bytes, not filenames or HTTP content types.
 Relative and absolute local paths are supported. Local file reads share the
 worker time budget and read no more than `max_bytes + 1` bytes. Files must be
 regular files. The decoder does not interpret URLs, run subprocesses, or fetch
-anything: your application or Breeze Images fetches remote bytes and calls
-`Rasterling.decode/2`. Apply download limits and URL-access policy there too.
+anything. To decode a remote image, fetch its bytes in your application and
+call `Rasterling.decode/2`. Apply download limits and URL-access policy there.
 
 ## Supported encodings
 
