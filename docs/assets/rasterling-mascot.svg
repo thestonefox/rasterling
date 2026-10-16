@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Rasterling mascot</title>
+  <desc id="desc">A wonky mint-green creature chomps an image file while colourful pixels pop out behind it.</desc>
+
+  <!-- Rounded vector shapes, with a pale keyline for dark backgrounds. -->
+  <path d="M388 291 Q440 286 446 252" fill="none" stroke="#FFF5DC" stroke-width="29" stroke-linecap="round"/>
+  <path d="M388 291 Q440 286 446 252" fill="none" stroke="#182A35" stroke-width="17" stroke-linecap="round"/>
+  <path d="M158 141 L146 101 Q143 83 160 89 L203 112 Q225 97 249 102 L266 75 Q273 63 280 79 L294 109 Q329 106 355 132 L389 120 Q406 114 403 134 L397 176 Q418 210 409 269 L400 338 Q396 383 361 400 L357 426 Q355 439 340 436 L313 427 Q279 438 244 426 L220 437 Q205 443 199 429 L192 406 Q147 394 137 356 L126 305 Q112 266 124 217 Q134 170 158 141 Z" fill="#58C6A9" stroke="#FFF5DC" stroke-width="27" stroke-linejoin="round"/>
+  <path d="M158 141 L146 101 Q143 83 160 89 L203 112 Q225 97 249 102 L266 75 Q273 63 280 79 L294 109 Q329 106 355 132 L389 120 Q406 114 403 134 L397 176 Q418 210 409 269 L400 338 Q396 383 361 400 L357 426 Q355 439 340 436 L313 427 Q279 438 244 426 L220 437 Q205 443 199 429 L192 406 Q147 394 137 356 L126 305 Q112 266 124 217 Q134 170 158 141 Z" fill="#58C6A9" stroke="#182A35" stroke-width="13" stroke-linejoin="round"/>
+  <path d="M155 326 Q166 384 215 390 Q280 411 342 389" fill="none" stroke="#36A98E" stroke-width="18" stroke-linecap="round"/>
+  <path d="M184 141 L199 129 M304 120 L323 129" fill="none" stroke="#182A35" stroke-width="10" stroke-linecap="round"/>
+  <!-- Uneven eyes looking towards the incoming image. -->
+  <ellipse cx="207" cy="192" rx="36" ry="40" fill="#FFF5DC" stroke="#182A35" stroke-width="11"/>
+  <ellipse cx="302" cy="181" rx="43" ry="46" fill="#FFF5DC" stroke="#182A35" stroke-width="11"/>
+  <ellipse cx="194" cy="200" rx="13" ry="17" fill="#182A35"/>
+  <ellipse cx="287" cy="190" rx="16" ry="20" fill="#182A35"/>
+  <circle cx="190" cy="194" r="4" fill="white"/>
+  <circle cx="283" cy="184" r="5" fill="white"/>
+  <path d="M349 236 L364 240 M346 254 L361 258" fill="none" stroke="#208E7D" stroke-width="7" stroke-linecap="round"/>
+  <!-- Crooked fangs and an enthusiastic, slightly ridiculous bite. -->
+  <path d="M158 255 Q222 222 292 252 Q316 267 305 302 Q295 333 247 337 Q197 338 164 311 Z" fill="#182A35" stroke="#182A35" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M214 242 L244 243 L236 276 Q232 282 226 274 Z" fill="#FFF5DC"/>
+  <path d="M268 248 L292 258 L277 279 Q272 283 269 277 Z" fill="#FFF5DC"/>
+  <path d="M257 331 L282 324 L272 303 Q267 298 264 306 Z" fill="#FFF5DC"/>
+  <path d="M205 328 L224 334 L221 310 Q218 305 214 311 Z" fill="#FFF5DC"/>
+  <!-- An image file being chomped, rather than a generic computer icon. -->
+  <g transform="rotate(-12 115 280)">
+    <path d="M39 224 Q39 212 51 212 L137 212 L172 246 L172 321 Q172 333 160 333 L51 333 Q39 333 39 321 Z" fill="#FFF5DC" stroke="#FFF5DC" stroke-width="22" stroke-linejoin="round"/>
+    <path d="M39 224 Q39 212 51 212 L137 212 L172 246 L172 321 Q172 333 160 333 L51 333 Q39 333 39 321 Z" fill="#FFF5DC" stroke="#182A35" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M137 213 L137 246 L170 246" fill="#B3DCED" stroke="#182A35" stroke-width="8" stroke-linejoin="round"/>
+    <circle cx="72" cy="253" r="13" fill="#FFBF49"/>
+    <path d="M52 310 L89 269 L111 291 L130 271 L160 310 Z" fill="#5DA0D2"/>
+    <path d="M52 310 L89 269 L111 291 L94 310 Z" fill="#7E78D8"/>
+  </g>
+  <!-- A little paw, two toes, and loose pixels popping out behind it. -->
+  <path d="M138 330 Q144 310 165 319 L184 331 Q196 342 183 352 Q170 361 154 350" fill="#58C6A9" stroke="#182A35" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M213 420 L220 427 M335 418 L342 425" stroke="#182A35" stroke-width="6" stroke-linecap="round"/>
+  <g stroke="#FFF5DC" stroke-width="18" stroke-linejoin="round">
+    <rect x="428" y="193" width="32" height="32" rx="5" fill="#FFBF49" transform="rotate(12 444 209)"/>
+    <rect x="458" y="252" width="31" height="31" rx="5" fill="#EE7E94" transform="rotate(-9 474 268)"/>
+    <rect x="421" y="312" width="30" height="30" rx="5" fill="#7E78D8" transform="rotate(14 436 327)"/>
+  </g>
+  <g stroke="#182A35" stroke-width="7" stroke-linejoin="round">
+    <rect x="428" y="193" width="32" height="32" rx="5" fill="#FFBF49" transform="rotate(12 444 209)"/>
+    <rect x="458" y="252" width="31" height="31" rx="5" fill="#EE7E94" transform="rotate(-9 474 268)"/>
+    <rect x="421" y="312" width="30" height="30" rx="5" fill="#7E78D8" transform="rotate(14 436 327)"/>
+  </g>
+</svg>

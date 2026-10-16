@@ -10,7 +10,7 @@ defmodule Rasterling.MixProject do
       deps: [],
       description: "Pure Elixir PNG, JPEG, GIF and BMP image decoding",
       package: [
-        files: ~w(lib .formatter.exs mix.exs README.md LICENSE SECURITY.md),
+        files: ~w(lib .formatter.exs mix.exs README.md LICENSE SECURITY.md docs),
         licenses: ["MIT"],
         links: %{"GitHub" => "https://github.com/thestonefox/rasterling"}
       ]
