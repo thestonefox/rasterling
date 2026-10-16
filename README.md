@@ -18,20 +18,20 @@ listed below. See [security](SECURITY.md) and [performance](docs/performance.md)
 
 ## Installation
 
-Until the first Hex release is published, add the Git dependency:
+Add [Rasterling](https://hex.pm/packages/rasterling) to your dependencies in
+`mix.exs`:
 
 ```elixir
-{:rasterling, github: "thestonefox/rasterling"}
+{:rasterling, "~> 0.1.0"}
 ```
 
 Then run `mix deps.get`. Dependency setup needs network access; decoding never
-does. There is no native decoder to download or compile. Pin a Git commit when
-you need a reproducible dependency revision.
+does. There is no native decoder to download or compile. Commit `mix.lock` in
+your application to keep dependency versions reproducible.
 
-After version 0.1.0 is published to Hex, use `{:rasterling, "~> 0.1.0"}` instead.
-See the [publishing guide](docs/publishing.md) for the maintainer release process.
 ExDoc is a development-only dependency for building documentation; applications
-using Rasterling do not fetch it.
+using Rasterling do not fetch it. See the [publishing guide](docs/publishing.md)
+for the maintainer release process.
 
 ## Decode bytes
 
