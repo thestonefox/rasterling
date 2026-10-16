@@ -3,18 +3,28 @@ defmodule Rasterling.JPEG do
   import Bitwise
   alias Rasterling.{Error, Limits}
 
+  @eoi 0xD9
+  @soi 0xD8
+  @dqt 0xDB
+  @dht 0xC4
+  @sof_baseline 0xC0
+  @sof_extended 0xC1
+  @sof_progressive 0xC2
+  @dri 0xDD
+  @app14 0xEE
+  @sos 0xDA
+
   @zigzag {0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34,
            27, 20, 13, 6, 7, 14, 21, 28, 35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37,
            44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63}
   @zero List.to_tuple(List.duplicate(0, 64))
-  @basis (for x <- 0..7 do
-            for u <- 0..7 do
-              if(u == 0, do: 1 / :math.sqrt(2), else: 1) *
-                :math.cos((2 * x + 1) * u * :math.pi() / 16)
-            end
-            |> List.to_tuple()
-          end)
-         |> List.to_tuple()
+  @c1 :math.cos(1 * :math.pi() / 16)
+  @c2 :math.cos(2 * :math.pi() / 16)
+  @c3 :math.cos(3 * :math.pi() / 16)
+  @c4 :math.cos(4 * :math.pi() / 16)
+  @c5 :math.cos(5 * :math.pi() / 16)
+  @c6 :math.cos(6 * :math.pi() / 16)
+  @c7 :math.cos(7 * :math.pi() / 16)
 
   def decode(<<255, 216, rest::binary>>, limits) do
     state = %{
@@ -67,11 +77,11 @@ defmodule Rasterling.JPEG do
     {marker, rest} = marker(bytes)
 
     case marker do
-      0xD9 ->
+      @eoi ->
         Limits.require!(rest == <<>>)
         state
 
-      0xD8 ->
+      @soi ->
         Error.fail()
 
       value when value in 0xD0..0xD7 ->
@@ -83,23 +93,23 @@ defmodule Rasterling.JPEG do
 
         state =
           case marker do
-            0xDB ->
+            @dqt ->
               quant(payload, state)
 
-            0xC4 ->
+            @dht ->
               huffman(payload, state)
 
-            value when value in [0xC0, 0xC1, 0xC2] ->
-              frame(payload, state, value == 0xC2)
+            value when value in [@sof_baseline, @sof_extended, @sof_progressive] ->
+              frame(payload, state, value == @sof_progressive)
 
-            0xDD ->
+            @dri ->
               <<interval::16>> = payload
               %{state | interval: interval}
 
-            0xEE ->
+            @app14 ->
               adobe(payload, state)
 
-            0xDA ->
+            @sos ->
               state
 
             value
@@ -113,7 +123,7 @@ defmodule Rasterling.JPEG do
               Error.fail(:unsupported_feature)
           end
 
-        if marker == 0xDA do
+        if marker == @sos do
           {rest, state} = scan(payload, rest, state)
           segments(rest, state)
         else
@@ -544,28 +554,48 @@ defmodule Rasterling.JPEG do
     else
       rows =
         for v <- 0..7 do
-          coefficients =
-            for u <- 0..7,
-                elem(block, v * 8 + u) != 0,
-                do: {u, elem(block, v * 8 + u) * elem(quant, v * 8 + u)}
-
-          for x <- 0..7 do
-            basis = elem(@basis, x)
-            Enum.reduce(coefficients, 0.0, fn {u, value}, sum -> sum + value * elem(basis, u) end)
+          for u <- 0..7 do
+            elem(block, v * 8 + u) * elem(quant, v * 8 + u)
           end
           |> List.to_tuple()
+          |> inverse_line()
         end
         |> List.to_tuple()
 
+      columns =
+        for x <- 0..7 do
+          for v <- 0..7, do: elem(elem(rows, v), x)
+        end
+        |> Enum.map(&inverse_line(List.to_tuple(&1)))
+        |> List.to_tuple()
+
       for y <- 0..7, x <- 0..7, into: <<>> do
-        basis = elem(@basis, y)
-
-        value =
-          Enum.reduce(0..7, 0.0, fn v, sum -> sum + elem(elem(rows, v), x) * elem(basis, v) end)
-
-        <<Limits.clamp(value / 4 + 128)>>
+        <<Limits.clamp(elem(elem(columns, x), y) / 4 + 128)>>
       end
     end
+  end
+
+  # Factor the cosine matrix into even/odd butterflies. Apply this independently
+  # to rows and columns; normalization stays in inverse/2. Constants are floats
+  # to retain rounding accuracy without large fixed-point intermediates.
+  defp inverse_line({b0, b1, b2, b3, b4, b5, b6, b7}) do
+    a = @c4 * (b0 + b4)
+    b = @c4 * (b0 - b4)
+    c = @c2 * b2 + @c6 * b6
+    d = @c6 * b2 - @c2 * b6
+    e0 = a + c
+    e3 = a - c
+    e1 = b + d
+    e2 = b - d
+    u0 = @c1 * b1 + @c7 * b7
+    v0 = @c7 * b1 - @c1 * b7
+    u1 = @c3 * b3 + @c5 * b5
+    v1 = @c5 * b3 - @c3 * b5
+    o0 = u0 + u1
+    o3 = v0 - v1
+    o1 = @c4 * (u0 + v0 - u1 + v1)
+    o2 = @c4 * (u0 - v0 - u1 - v1)
+    {e0 + o0, e1 + o1, e2 + o2, e3 + o3, e3 - o3, e2 - o2, e1 - o1, e0 - o0}
   end
 
   defp ycbcr(y, cb, cr),
