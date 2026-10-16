@@ -173,6 +173,30 @@ defmodule Rasterling.ValidationTest do
     assert Process.alive?(self())
   end
 
+  test "decoder and its caller monitor stop when an owning task is killed" do
+    bytes = File.read!("test/fixtures/grace-hopper.jpg")
+
+    caller =
+      spawn(fn ->
+        receive do
+          :start -> Rasterling.decode(bytes)
+        end
+      end)
+
+    :erlang.trace(caller, true, [:procs, :set_on_spawn])
+    send(caller, :start)
+
+    assert_receive {:trace, ^caller, :spawn, worker, _}, 1000
+    assert_receive {:trace, ^worker, :spawn, watcher, _}, 1000
+    :erlang.suspend_process(worker)
+    worker_monitor = Process.monitor(worker)
+    watcher_monitor = Process.monitor(watcher)
+    Process.exit(caller, :kill)
+
+    assert_receive {:DOWN, ^worker_monitor, :process, ^worker, :killed}, 1000
+    assert_receive {:DOWN, ^watcher_monitor, :process, ^watcher, :normal}, 1000
+  end
+
   test "all fixture prefixes are rejected rather than returned as partial images" do
     for path <- Path.wildcard("test/fixtures/*.{png,jpg,gif,bmp}"),
         bytes = File.read!(path),

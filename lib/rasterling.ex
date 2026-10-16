@@ -102,6 +102,8 @@ defmodule Rasterling do
     {pid, monitor} =
       :erlang.spawn_opt(
         fn ->
+          watch_caller(caller, self())
+
           result =
             try do
               {:ok, fun.()}
@@ -158,6 +160,23 @@ defmodule Rasterling do
 
         {:error, %Error{reason: :timeout, message: "Image decoding exceeded the time limit"}}
     end
+  end
+
+  # The API caller may itself be a task terminated by an application's timeout.
+  # Its receive timeout cannot clean up the decoder once that caller has died.
+  defp watch_caller(caller, worker) do
+    spawn(fn ->
+      caller_monitor = Process.monitor(caller)
+      worker_monitor = Process.monitor(worker)
+
+      receive do
+        {:DOWN, ^caller_monitor, :process, ^caller, _} ->
+          Process.exit(worker, :kill)
+
+        {:DOWN, ^worker_monitor, :process, ^worker, _} ->
+          :ok
+      end
+    end)
   end
 
   defp dispatch(<<137, "PNG", 13, 10, 26, 10, _::binary>> = bytes, limits),
