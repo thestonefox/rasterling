@@ -101,8 +101,10 @@ before allocating image data; PNG inflation and GIF output are bounded. JPEG
 scan count, palette indices, bitfields and container structure are validated.
 
 The heap budget uses BEAM `max_heap_size`, checked at garbage collections.
-Large shared binaries are bounded separately by encoded-byte, pixel and PNG
-scanline limits. This is **not a process RSS or VM-wide memory ceiling**.
+Shared binaries are included in that accounting; shared references can be counted
+more than once, and sub-binaries retain their parent allocation. Encoded-byte,
+pixel and PNG scanline limits apply separately. This is **not a process RSS or
+VM-wide memory ceiling**.
 Applications must limit concurrent decodes. Worker timeout/heap exhaustion
 returns an error without killing the calling process.
 

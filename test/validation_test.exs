@@ -173,6 +173,21 @@ defmodule Rasterling.ValidationTest do
     assert Process.alive?(self())
   end
 
+  test "worker budget includes large shared input binaries" do
+    <<255, 216, rest::binary>> = File.read!("test/fixtures/jpeg-l-0-baseline.jpg")
+    # Valid ignored APP15 metadata: the image stays tiny while its parent binary
+    # exceeds the memory budget. The previous heap-only accounting accepted it.
+    segment = <<255, 239, 65535::16, 0::size(65533 * 8)>>
+    padding = :binary.copy(segment, 32)
+    bytes = <<255, 216, padding::binary, rest::binary>>
+    assert {:ok, %Image{}} = Rasterling.decode(bytes)
+
+    assert {:error, %Error{reason: :resource_limit}} =
+             Rasterling.decode(bytes, max_memory_bytes: 524_288)
+
+    assert Process.alive?(self())
+  end
+
   test "decoder and its caller monitor stop when an owning task is killed" do
     bytes = File.read!("test/fixtures/grace-hopper.jpg")
 

@@ -19,8 +19,8 @@ defmodule Rasterling do
 
   Options: `:max_bytes`, `:max_pixels`, `:timeout` (milliseconds) and
   `:max_memory_bytes` (worker heap budget). All must be positive integers.
-  Large reference-counted binaries are bounded separately by byte/pixel limits;
-  the worker heap budget is not a process RSS or VM-wide memory guarantee.
+  The GC-checked worker budget includes shared reference-counted binaries.
+  It is not a process RSS or VM-wide memory guarantee.
   """
   @spec decode(binary(), keyword()) :: {:ok, Rasterling.Image.t()} | {:error, Error.t()}
   def decode(bytes, opts \\ []) when is_binary(bytes) do
@@ -53,14 +53,14 @@ defmodule Rasterling do
           _ -> Error.fail(:file_error)
         end
 
-        case File.open(path, [:read, :binary]) do
+        case File.open(path, [:read, :binary, :raw]) do
           {:ok, file} ->
             try do
-              case IO.binread(file, limits.max_bytes + 1) do
-                bytes when is_binary(bytes) and byte_size(bytes) <= limits.max_bytes ->
+              case :file.read(file, limits.max_bytes + 1) do
+                {:ok, bytes} when byte_size(bytes) <= limits.max_bytes ->
                   dispatch(bytes, limits)
 
-                bytes when is_binary(bytes) ->
+                {:ok, _bytes} ->
                   Error.fail(:too_large)
 
                 :eof ->
@@ -70,7 +70,7 @@ defmodule Rasterling do
                   Error.fail(:file_error)
               end
             after
-              File.close(file)
+              :file.close(file)
             end
 
           _ ->
@@ -127,6 +127,7 @@ defmodule Rasterling do
           {:max_heap_size,
            %{
              size: max(1024, div(limits.max_memory_bytes, :erlang.system_info(:wordsize))),
+             include_shared_binaries: true,
              kill: true,
              error_logger: false
            }}

@@ -8,8 +8,10 @@ network requests or create atoms from image data. PNG uses OTP's bundled zlib.
 
 - Keep encoded-byte, pixel, deadline and heap limits enabled and appropriately
   small for your application. Worker processes isolate decoding failures.
-- The worker heap limit is checked during GC. It is not a hard RSS, binary-memory
-  or VM-wide ceiling. Large binaries are bounded separately by byte/pixel limits.
+- The worker heap limit includes shared binaries and is checked during GC.
+  Shared references may be counted repeatedly; sub-binaries count their parent
+  allocation. It is not a hard RSS or VM-wide ceiling. Encoded-byte, pixel and
+  PNG scanline limits apply separately.
 - Limit concurrent operations. A thousand individually bounded workers can
   still exhaust a machine. Apply rate limits to public upload endpoints.
 - Bound remote downloads before decoding and implement URL/SSRF restrictions in
