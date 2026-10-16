@@ -36,9 +36,11 @@ jobs:
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
+      - run: mix deps.get
       - run: mix compile --warnings-as-errors
       - run: mix format --check-formatted
       - run: mix test --warnings-as-errors
+      - run: mix docs --warnings-as-errors
       - run: mix hex.build
 
   macos:
@@ -52,7 +54,9 @@ jobs:
       - name: Install Elixir
         run: brew install elixir
       - run: mix local.hex --force
+      - run: mix deps.get
       - run: mix compile --warnings-as-errors
       - run: mix format --check-formatted
       - run: mix test --warnings-as-errors
+      - run: mix docs --warnings-as-errors
       - run: mix hex.build

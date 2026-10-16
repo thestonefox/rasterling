@@ -7,7 +7,20 @@ defmodule Rasterling.MixProject do
       version: "0.1.0",
       elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
-      deps: [],
+      deps: [{:ex_doc, "~> 0.34", only: :dev, runtime: false}],
+      name: "Rasterling",
+      source_url: "https://github.com/thestonefox/rasterling",
+      docs: [
+        main: "readme",
+        extras: [
+          "README.md",
+          "LICENSE",
+          "SECURITY.md",
+          "docs/performance.md",
+          "docs/publishing.md"
+        ],
+        assets: %{"docs/assets" => "docs/assets"}
+      ],
       description: "Pure Elixir PNG, JPEG, GIF and BMP image decoding",
       package: [
         files: ~w(lib .formatter.exs mix.exs README.md LICENSE SECURITY.md docs),

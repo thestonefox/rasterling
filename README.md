@@ -7,7 +7,7 @@
 
 Pure Elixir decoding for PNG, JPEG, GIF and BMP. **Little beast. Raw pixels.**
 
-- Runs on the BEAM with zero runtime or build dependencies.
+- Runs on the BEAM with zero runtime dependencies.
 - No third-party NIFs, external converters, platform binaries or downloads.
 - Returns eight-bit RGBA pixels; terminal rendering belongs to Breeze Images.
 - Standard OTP `:zlib` handles PNG decompression.
@@ -18,8 +18,7 @@ listed below. See [security](SECURITY.md) and [performance](docs/performance.md)
 
 ## Installation
 
-Rasterling has not been published to Hex. After its implementation is pushed,
-add the Git dependency to your application:
+Until the first Hex release is published, add the Git dependency:
 
 ```elixir
 {:rasterling, github: "thestonefox/rasterling"}
@@ -28,6 +27,11 @@ add the Git dependency to your application:
 Then run `mix deps.get`. Dependency setup needs network access; decoding never
 does. There is no native decoder to download or compile. Pin a Git commit when
 you need a reproducible dependency revision.
+
+After version 0.1.0 is published to Hex, use `{:rasterling, "~> 0.1.0"}` instead.
+See the [publishing guide](docs/publishing.md) for the maintainer release process.
+ExDoc is a development-only dependency for building documentation; applications
+using Rasterling do not fetch it.
 
 ## Decode bytes
 
